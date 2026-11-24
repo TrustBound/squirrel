@@ -1,11 +1,11 @@
 //// A set of utilities to work within a Gleam project.
 ////
 
-import dream_squirrel/internal/error.{
+import dream_sql_generator/internal/error.{
   type Error, CannotParseGleamToml, CannotReadFile, InvalidClientModule,
   InvalidClientModuleType,
 }
-import dream_squirrel/internal/gleam
+import dream_sql_generator/internal/gleam
 import filepath
 import gleam/list
 import gleam/result
@@ -26,11 +26,11 @@ pub fn name() -> Result(String, Nil) {
 
 /// The Gleam module that the generated code uses to run queries. It is `pog`
 /// by default, and a project can change it with the `client_module` setting in
-/// the `[tools.dream_squirrel]` table of its `gleam.toml`:
+/// the `[tools.dream_sql_generator]` table of its `gleam.toml`:
 ///
 /// ```toml
-/// [tools.dream_squirrel]
-/// client_module = "dream_pog"
+/// [tools.dream_sql_generator]
+/// client_module = "dream_postgres_client"
 /// ```
 ///
 /// A `ClientModule` can only be built from a valid Gleam module name.
@@ -41,7 +41,7 @@ pub opaque type ClientModule {
 
 const default_client_module = "pog"
 
-/// Returns the name of the client module, for example `"dream_pog"`.
+/// Returns the name of the client module, for example `"dream_postgres_client"`.
 ///
 pub fn client_module_name(client: ClientModule) -> String {
   client.name
@@ -71,7 +71,7 @@ pub fn client_module_from_toml(
     |> result.replace_error(CannotParseGleamToml(file)),
   )
 
-  case tom.get_string(toml, ["tools", "dream_squirrel", "client_module"]) {
+  case tom.get_string(toml, ["tools", "dream_sql_generator", "client_module"]) {
     Error(tom.NotFound(_)) -> Ok(ClientModule(default_client_module))
     Error(tom.WrongType(key:, expected:, got:)) ->
       Error(InvalidClientModuleType(
@@ -89,7 +89,7 @@ pub fn client_module_from_toml(
 }
 
 /// A module name is one or more lowercase names separated by slashes, for
-/// example `dream_pog` or `my_app/database`.
+/// example `dream_postgres_client` or `my_app/database`.
 ///
 fn is_module_name(name: String) -> Bool {
   use segment <- list.all(string.split(name, on: "/"))

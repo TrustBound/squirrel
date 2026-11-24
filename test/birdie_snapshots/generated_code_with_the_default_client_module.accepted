@@ -5,7 +5,7 @@ title: generated code with the default client module
 //// This module contains the code to run the sql queries defined in
 //// `./test-directory`.
 //// > 🐿️ This module was generated automatically using v-test of
-//// > the [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+//// > the [dream_sql_generator package](https://github.com/TrustBound/squirrel/tree/dream-sql-generator),
 //// > a fork of Squirrel.
 ////
 
@@ -17,7 +17,7 @@ import pog
 /// defined in `query.sql`.
 ///
 /// > 🐿️ This type definition was generated automatically using v-test of the
-/// > [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+/// > [dream_sql_generator package](https://github.com/TrustBound/squirrel/tree/dream-sql-generator),
 /// > a fork of Squirrel.
 ///
 pub type QueryRow {
@@ -28,7 +28,7 @@ pub type QueryRow {
 /// defined in `query.sql`.
 ///
 /// > 🐿️ This function was generated automatically using v-test of
-/// > the [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+/// > the [dream_sql_generator package](https://github.com/TrustBound/squirrel/tree/dream-sql-generator),
 /// > a fork of Squirrel.
 ///
 pub fn query(

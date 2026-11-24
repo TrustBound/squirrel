@@ -1,11 +1,11 @@
 import argv
-import dream_squirrel/internal/database/postgres
-import dream_squirrel/internal/error.{
+import dream_sql_generator/internal/database/postgres
+import dream_sql_generator/internal/error.{
   type Error, CannotOverwriteExistingFile, CannotReadFile, CannotWriteToFile,
   InvalidConnectionString, OutdatedFile,
 }
-import dream_squirrel/internal/project
-import dream_squirrel/internal/query.{type TypedQuery}
+import dream_sql_generator/internal/project
+import dream_sql_generator/internal/query.{type TypedQuery}
 import envoy
 import filepath
 import glam/doc.{type Document}
@@ -61,12 +61,12 @@ const squirrel_version = "v1.0.0"
 /// > ⚠️ The generated code relies on the
 /// > [`pog`](https://hexdocs.pm/pog/) package to work, so make sure to add
 /// > that dependency to your project.
-/// > To use another module with the same API, such as `dream_pog`, set it in
-/// > the `[tools.dream_squirrel]` table of your `gleam.toml`:
+/// > To use another module with the same API, such as `dream_postgres_client`, set it in
+/// > the `[tools.dream_sql_generator]` table of your `gleam.toml`:
 /// >
 /// > ```toml
-/// > [tools.dream_squirrel]
-/// > client_module = "dream_pog"
+/// > [tools.dream_sql_generator]
+/// > client_module = "dream_postgres_client"
 /// > ```
 ///
 pub fn main() {
@@ -165,12 +165,13 @@ fn parse_cli_args() -> Result(Mode, Nil) {
 
 fn help_text() -> Document {
   let nesting = 4
-  let title_line = doc.from_string("🐿️  dream_squirrel " <> squirrel_version)
+  let title_line =
+    doc.from_string("🐿️  dream_sql_generator " <> squirrel_version)
 
   let usage_line =
     doc.concat([
       doc.zero_width_string(ansi.yellow("Usage: ")),
-      doc.zero_width_string(ansi.green("gleam run -m dream_squirrel")),
+      doc.zero_width_string(ansi.green("gleam run -m dream_sql_generator")),
       doc.from_string(" [COMMAND]"),
     ])
 
@@ -720,5 +721,5 @@ fn flexible_string(string: String) -> Document {
 
 // --- FFI ---------------------------------------------------------------------
 
-@external(erlang, "dream_squirrel_ffi", "exit")
+@external(erlang, "dream_sql_generator_ffi", "exit")
 fn exit(n: Int) -> Nil

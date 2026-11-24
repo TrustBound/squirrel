@@ -115,11 +115,12 @@ const integration_tests = [
   ),
 ]
 
-const project_toml = "name = \"integration_test_project\"
+const project_toml =
+  "name = \"integration_test_project\"
 version = \"1.0.0\"
 
 [dependencies]
-dream_squirrel = { path = \"../..\" }
+dream_sql_generator = { path = \"../..\" }
 pog = \">= 4.1.0 and < 5.0.0\"
 "
 
@@ -305,7 +306,7 @@ fn create_query_files_and_assertions_for_query(
   |> string.replace(each: "<query>", with: query_name)
 }
 
-@external(erlang, "dream_squirrel_ffi", "unique")
+@external(erlang, "dream_sql_generator_ffi", "unique")
 fn unique_integer() -> Int
 
 /// Writes the entry point of the Gleam project that will connect to the
@@ -353,7 +354,7 @@ fn test_project(dir: String) -> Result(String, #(Int, String)) {
   let assert Ok(_) =
     shellout.command(
       run: "gleam",
-      with: ["run", "-mdream_squirrel"],
+      with: ["run", "-mdream_sql_generator"],
       in: dir,
       opt: [],
     )

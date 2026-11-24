@@ -1,9 +1,9 @@
 import birdie
-import dream_squirrel as squirrel
-import dream_squirrel/internal/database/postgres
-import dream_squirrel/internal/error.{type Error}
-import dream_squirrel/internal/project
-import dream_squirrel/internal/query.{type TypedQuery}
+import dream_sql_generator as squirrel
+import dream_sql_generator/internal/database/postgres
+import dream_sql_generator/internal/error.{type Error}
+import dream_sql_generator/internal/project
+import dream_sql_generator/internal/query.{type TypedQuery}
 import filepath
 import glam/doc
 import gleam/erlang/process
@@ -1337,12 +1337,12 @@ pub fn enum_with_a_long_enoug_name_does_not_generate_invalid_decoder_test() {
 }
 
 // --- CLIENT MODULE -----------------------------------------------------------
-// Tests for the `client_module` setting in the `[tools.dream_squirrel]` table
+// Tests for the `client_module` setting in the `[tools.dream_sql_generator]` table
 // of a project's `gleam.toml`.
 //
 
 /// The client module a project gets when its `gleam.toml` has no
-/// `[tools.dream_squirrel]` table.
+/// `[tools.dream_sql_generator]` table.
 ///
 fn pog_client() -> project.ClientModule {
   let assert Ok(client) =
@@ -1353,7 +1353,7 @@ fn pog_client() -> project.ClientModule {
 fn client_toml(value: String) -> String {
   "name = \"wibble\"
 
-[tools.dream_squirrel]
+[tools.dream_sql_generator]
 client_module = " <> value <> "
 "
 }
@@ -1374,13 +1374,14 @@ pub fn client_module_is_pog_without_a_tools_table_test() {
 }
 
 pub fn client_module_is_pog_if_the_tools_table_has_no_setting_test() {
-  let toml = "name = \"wibble\"\n\n[tools.dream_squirrel]\n"
+  let toml = "name = \"wibble\"\n\n[tools.dream_sql_generator]\n"
   let assert Ok(client) = project.client_module_from_toml("gleam.toml", toml)
   assert project.client_module_name(client) == "pog"
 }
 
 pub fn client_module_is_read_from_the_tools_table_test() {
-  assert project.client_module_name(client("dream_pog")) == "dream_pog"
+  assert project.client_module_name(client("dream_postgres_client"))
+    == "dream_postgres_client"
 }
 
 pub fn client_module_can_be_a_nested_module_test() {
@@ -1390,8 +1391,9 @@ pub fn client_module_can_be_a_nested_module_test() {
 
 pub fn client_module_that_is_not_a_module_name_is_an_error_test() {
   use value <- list.each([
-    "", "Dream_pog", "dream-pog", "dream pog", "1pog", "dream_pog/",
-    "/dream_pog", "my_app//pog", "my_app/Pog",
+    "", "Dream_postgres_client", "dream-postgres-client",
+    "dream postgres client", "1pog", "dream_postgres_client/",
+    "/dream_postgres_client", "my_app//pog", "my_app/Pog",
   ])
   let toml = client_toml("\"" <> value <> "\"")
   let assert Error(error.InvalidClientModule(file: "gleam.toml", value: found)) =
@@ -1400,7 +1402,7 @@ pub fn client_module_that_is_not_a_module_name_is_an_error_test() {
 }
 
 pub fn invalid_client_module_error_message_test() {
-  client_toml("\"Dream-Pog\"")
+  client_toml("\"Dream-Postgres-Client\"")
   |> client_module_error
   |> birdie.snap(title: "invalid client module error message")
 }
@@ -1429,10 +1431,12 @@ pub fn generated_code_with_the_default_client_module_test() {
   |> birdie.snap(title: "generated code with the default client module")
 }
 
-pub fn generated_code_with_the_dream_pog_client_module_test() {
+pub fn generated_code_with_the_dream_postgres_client_client_module_test() {
   "select name, acorns from squirrel where name = $1"
-  |> should_codegen_with_comments_and_client(client("dream_pog"))
-  |> birdie.snap(title: "generated code with the dream_pog client module")
+  |> should_codegen_with_comments_and_client(client("dream_postgres_client"))
+  |> birdie.snap(
+    title: "generated code with the dream_postgres_client client module",
+  )
 }
 
 pub fn client_module_only_changes_the_client_import_test() {
@@ -1446,13 +1450,20 @@ pub fn client_module_only_changes_the_client_import_test() {
 
   let default_code =
     should_codegen_with_comments_and_client(query, pog_client())
-  let dream_pog_code =
-    should_codegen_with_comments_and_client(query, client("dream_pog"))
+  let dream_postgres_client_code =
+    should_codegen_with_comments_and_client(
+      query,
+      client("dream_postgres_client"),
+    )
 
   assert string.contains(default_code, "\nimport pog\n")
-  assert !string.contains(dream_pog_code, "\nimport pog\n")
-  assert string.contains(dream_pog_code, "\nimport dream_pog as pog\n")
-  assert without_imports(dream_pog_code) == without_imports(default_code)
+  assert !string.contains(dream_postgres_client_code, "\nimport pog\n")
+  assert string.contains(
+    dream_postgres_client_code,
+    "\nimport dream_postgres_client as pog\n",
+  )
+  assert without_imports(dream_postgres_client_code)
+    == without_imports(default_code)
 }
 
 pub fn client_module_named_pog_is_not_aliased_test() {
@@ -1469,12 +1480,15 @@ pub fn check_finds_code_generated_with_another_client_module_test() {
   let expected_code =
     should_codegen_with_comments_and_client(query, pog_client())
   let actual_code =
-    should_codegen_with_comments_and_client(query, client("dream_pog"))
+    should_codegen_with_comments_and_client(
+      query,
+      client("dream_postgres_client"),
+    )
   let assert squirrel.Different =
     squirrel.compare_code_snippets(expected_code, actual_code)
 }
 
-pub fn named_parameters_with_the_dream_pog_client_module_test() {
+pub fn named_parameters_with_the_dream_postgres_client_client_module_test() {
   "
 with squirrel_user as (select 1 as squirrel_user_id, 'Louis' as name)
 select name
@@ -1482,11 +1496,13 @@ from squirrel_user
 where $1 = squirrel_user_id
 and squirrel_user.name = $2
 "
-  |> should_codegen_with_comments_and_client(client("dream_pog"))
-  |> birdie.snap(title: "named parameters with the dream_pog client module")
+  |> should_codegen_with_comments_and_client(client("dream_postgres_client"))
+  |> birdie.snap(
+    title: "named parameters with the dream_postgres_client client module",
+  )
 }
 
-pub fn renamed_parameters_with_the_dream_pog_client_module_test() {
+pub fn renamed_parameters_with_the_dream_postgres_client_client_module_test() {
   "
 with wibble as (select gen_random_uuid() as uuid_decoder, 1 as connection)
 select uuid_decoder
@@ -1494,6 +1510,8 @@ from wibble
 where $1 = uuid_decoder
 and connection = $2
 "
-  |> should_codegen_with_comments_and_client(client("dream_pog"))
-  |> birdie.snap(title: "renamed parameters with the dream_pog client module")
+  |> should_codegen_with_comments_and_client(client("dream_postgres_client"))
+  |> birdie.snap(
+    title: "renamed parameters with the dream_postgres_client client module",
+  )
 }

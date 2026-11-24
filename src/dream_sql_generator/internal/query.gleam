@@ -1,9 +1,9 @@
-import dream_squirrel/internal/error.{
+import dream_sql_generator/internal/error.{
   type Error, CannotReadFile, QueryFileHasInvalidName,
   QueryReturnsMultipleValuesWithTheSameName,
 }
-import dream_squirrel/internal/gleam.{type EnumVariant, type TypeIdentifier}
-import dream_squirrel/internal/project.{type ClientModule}
+import dream_sql_generator/internal/gleam.{type EnumVariant, type TypeIdentifier}
+import dream_sql_generator/internal/project.{type ClientModule}
 import filepath
 import glam/doc.{type Document}
 import gleam/bool
@@ -229,7 +229,7 @@ fn default_codegen_state(client: ClientModule) {
 /// The generated code always calls the client module `pog`, for example
 /// `pog.query` and `pog.Connection`. So this import is the only place that
 /// names the client module: a module that is not already called `pog` is
-/// imported with a `pog` alias, like `import dream_pog as pog`.
+/// imported with a `pog` alias, like `import dream_postgres_client as pog`.
 ///
 fn client_import(client: ClientModule) -> String {
   let name = project.client_module_name(client)
@@ -405,7 +405,7 @@ pub fn generate_code(
 ) -> String {
   // We need to sort the queries before generating any code, otherwise the order
   // with which they will appear in the generated file won't be reproducible!
-  // That could cause CI checks like `gleam run -m dream_squirrel check` to fail.
+  // That could cause CI checks like `gleam run -m dream_sql_generator check` to fail.
   //
   let queries =
     list.sort(queries, fn(one, other) { string.compare(one.file, other.file) })
@@ -681,7 +681,7 @@ fn module_doc(version: String, directory: String) -> String {
   "//// This module contains the code to run the sql queries defined in
 //// `" <> directory <> "`.
 //// > 🐿️ This module was generated automatically using " <> version <> " of
-//// > the [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+//// > the [dream_sql_generator package](https://github.com/TrustBound/squirrel/tree/dream-sql-generator),
 //// > a fork of Squirrel.
 ////"
 }
@@ -703,7 +703,7 @@ fn function_doc(version: String, query: TypedQuery) -> String {
   base <> "
 ///
 /// > 🐿️ This function was generated automatically using " <> version <> " of
-/// > the [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+/// > the [dream_sql_generator package](https://github.com/TrustBound/squirrel/tree/dream-sql-generator),
 /// > a fork of Squirrel.
 ///"
 }
@@ -730,7 +730,7 @@ fn record_doc(
 /// defined in `" <> file <> "`.
 ///
 /// > 🐿️ This type definition was generated automatically using " <> version <> " of the
-/// > [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+/// > [dream_sql_generator package](https://github.com/TrustBound/squirrel/tree/dream-sql-generator),
 /// > a fork of Squirrel.
 ///"
 
@@ -828,7 +828,7 @@ fn enum_type_definition_doc(
     "/// Corresponds to the Postgres `" <> original_name <> "` enum.
 ///
 /// > 🐿️ This type definition was generated automatically using " <> version <> " of the
-/// > [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+/// > [dream_sql_generator package](https://github.com/TrustBound/squirrel/tree/dream-sql-generator),
 /// > a fork of Squirrel.
 ///"
 
@@ -927,7 +927,8 @@ fn enum_decoder_doc(
   ])
 }
 
-const uuid_decoder = "/// A decoder to decode `Uuid`s coming from a Postgres query.
+const uuid_decoder =
+  "/// A decoder to decode `Uuid`s coming from a Postgres query.
 ///
 fn uuid_decoder() {
   use bit_array <- decode.then(decode.bit_array)

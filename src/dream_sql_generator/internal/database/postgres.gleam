@@ -13,8 +13,8 @@
 //// > that is a bug! Please do reach out, I'd love to hear your feedback.
 ////
 
-import dream_squirrel/internal/database/postgres_protocol as pg
-import dream_squirrel/internal/error.{
+import dream_sql_generator/internal/database/postgres_protocol as pg
+import dream_sql_generator/internal/error.{
   type EnumError, type Error, type Pointer, type ValueIdentifierError, ByteIndex,
   Pointer,
 }
@@ -31,12 +31,12 @@ import gleam/result
 import gleam/set.{type Set}
 import gleam/string
 
-import dream_squirrel/internal/eval_extra
-import dream_squirrel/internal/gleam
-import dream_squirrel/internal/query.{
+import dream_sql_generator/internal/eval_extra
+import dream_sql_generator/internal/gleam
+import dream_sql_generator/internal/query.{
   type TypedQuery, type UntypedQuery, UntypedQuery,
 }
-import dream_squirrel/internal/scram
+import dream_sql_generator/internal/scram
 
 const minimum_required_version = 160_000
 

@@ -1381,7 +1381,7 @@ fn decode_fields_rec(binary, result) {
   }
 }
 
-@external(erlang, "dream_squirrel_ffi", "recover_string")
+@external(erlang, "dream_sql_generator_ffi", "recover_string")
 fn recover_string(value: a) -> Result(String, Nil)
 
 type BinarySplitOption {

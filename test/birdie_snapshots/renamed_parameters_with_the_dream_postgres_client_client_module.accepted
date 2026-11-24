@@ -1,15 +1,15 @@
 ---
 version: 2.0.2
-title: renamed parameters with the dream_pog client module
+title: renamed parameters with the dream_postgres_client client module
 ---
 //// This module contains the code to run the sql queries defined in
 //// `./test-directory`.
 //// > 🐿️ This module was generated automatically using v-test of
-//// > the [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+//// > the [dream_sql_generator package](https://github.com/TrustBound/squirrel/tree/dream-sql-generator),
 //// > a fork of Squirrel.
 ////
 
-import dream_pog as pog
+import dream_postgres_client as pog
 import gleam/dynamic/decode
 import youid/uuid.{type Uuid}
 
@@ -17,7 +17,7 @@ import youid/uuid.{type Uuid}
 /// defined in `query.sql`.
 ///
 /// > 🐿️ This type definition was generated automatically using v-test of the
-/// > [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+/// > [dream_sql_generator package](https://github.com/TrustBound/squirrel/tree/dream-sql-generator),
 /// > a fork of Squirrel.
 ///
 pub type QueryRow {
@@ -28,7 +28,7 @@ pub type QueryRow {
 /// defined in `query.sql`.
 ///
 /// > 🐿️ This function was generated automatically using v-test of
-/// > the [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+/// > the [dream_sql_generator package](https://github.com/TrustBound/squirrel/tree/dream-sql-generator),
 /// > a fork of Squirrel.
 ///
 pub fn query(

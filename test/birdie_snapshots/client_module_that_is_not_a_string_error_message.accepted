@@ -1,13 +1,13 @@
 ---
 version: 1.4.0
 title: client module that is not a string error message
-file: ./test/dream_squirrel_test.gleam
+file: ./test/dream_sql_generator_test.gleam
 test_name: client_module_that_is_not_a_string_error_message_test
 ---
 [31m[1mError: [22mInvalid client module[39m
 
-The `tools.dream_squirrel.client_module` value in [4mgleam.toml[24m should be
-of type String, but it is of type Int.
+The `tools.dream_sql_generator.client_module` value in [4mgleam.toml[24m
+should be of type String, but it is of type Int.
 
-Hint: Set the client module as a string in the `[tools.dream_squirrel]` table,
-for example `client_module = "dream_pog"`.
+Hint: Set the client module as a string in the `[tools.dream_sql_generator]`
+table, for example `client_module = "dream_postgres_client"`.

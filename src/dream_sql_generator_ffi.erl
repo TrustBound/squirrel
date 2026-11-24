@@ -1,4 +1,4 @@
--module(dream_squirrel_ffi).
+-module(dream_sql_generator_ffi).
 -export([unique/0, exit/1, recover_string/1]).
 
 recover_string(Binary) ->

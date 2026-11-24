@@ -1,4 +1,4 @@
-import dream_squirrel/internal/error.{
+import dream_sql_generator/internal/error.{
   type EnumError, type TypeIdentifierError, type ValueIdentifierError,
   EnumWithNoVariants, InvalidEnumName, InvalidEnumVariants,
   TypeContainsInvalidGrapheme, TypeIsEmpty, ValueContainsInvalidGrapheme,

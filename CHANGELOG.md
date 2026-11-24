@@ -2,29 +2,29 @@
 
 ## Unreleased
 
-- `dream_squirrel` is a fork of Squirrel 4.7.0 that also includes the upstream
+- `dream_sql_generator` is a fork of Squirrel 4.7.0 that also includes the upstream
   `main` branch up to commit `5b6407d`. The package and its modules are
-  now called `dream_squirrel`: run `gleam run -m dream_squirrel`.
+  now called `dream_sql_generator`: run `gleam run -m dream_sql_generator`.
 
 - The module that the generated code uses to run queries can now be set with
-  the `client_module` key in the `[tools.dream_squirrel]` table of the
+  the `client_module` key in the `[tools.dream_sql_generator]` table of the
   project's `gleam.toml`. For example:
 
   ```toml
-  [tools.dream_squirrel]
-  client_module = "dream_pog"
+  [tools.dream_sql_generator]
+  client_module = "dream_postgres_client"
   ```
 
-  The generated code then imports `dream_pog as pog`, and all other lines stay
+  The generated code then imports `dream_postgres_client as pog`, and all other lines stay
   the same. The default is `pog`, as in Squirrel. An invalid value is an error
   before any database work.
 
 - `pog` is no longer a dependency of the package, only a dev dependency for the
-  tests. A project adds the client package it uses (`pog` or `dream_pog`).
+  tests. A project adds the client package it uses (`pog` or `dream_postgres_client`).
 
-- The generated code and the CLI now name `dream_squirrel` v1.0.0. Each
+- The generated code and the CLI now name `dream_sql_generator` v1.0.0. Each
   generated module, function and type says it was generated using v1.0.0 of
-  the [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+  the [dream_sql_generator package](https://github.com/TrustBound/squirrel/tree/dream-sql-generator),
   a fork of Squirrel.
 
 - Squirrel now uses a better name for the generated function connection
