@@ -1,4 +1,4 @@
-# 🐿️ squirrel - type safe SQL in Gleam
+# 🐿️ dream_squirrel - type safe SQL in Gleam
 
 ## About this fork
 
@@ -29,8 +29,8 @@ Two things are different from Squirrel:
 The rest of this README is the Squirrel README, with the commands changed to
 the `dream_squirrel` names.
 
-[![Package Version](https://img.shields.io/hexpm/v/squirrel)](https://hex.pm/packages/squirrel)
-[![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/squirrel/)
+[![Package Version](https://img.shields.io/hexpm/v/dream_squirrel)](https://hex.pm/packages/dream_squirrel)
+[![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/dream_squirrel/)
 
 [![Squirrel showcase](https://github.com/user-attachments/assets/4abd308b-b191-4296-a0b6-093db0595794)](https://github.com/user-attachments/assets/4abd308b-b191-4296-a0b6-093db0595794)
 
@@ -291,6 +291,9 @@ which directories and modules to look for.
 This makes it easier to get started with a new project and cuts down on all the
 bike shedding: _"Where should I put my queries?",_
 _"How many queries should go in on file?",_ ...
+
+`dream_squirrel` adds one setting, `client_module`. Refer to
+[About this fork](#about-this-fork).
 
 ### Can Squirrel read my `.env` file?
 
