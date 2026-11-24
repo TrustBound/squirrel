@@ -17,6 +17,7 @@ import squirrel/internal/error.{
   QueryReturnsMultipleValuesWithTheSameName,
 }
 import squirrel/internal/gleam.{type EnumVariant, type TypeIdentifier}
+import squirrel/internal/project.{type ClientModule}
 import tote/bag
 
 /// A query that still needs to go through the type checking process.
@@ -215,14 +216,27 @@ fn merge_helpers(
   }
 }
 
-fn default_codegen_state() {
+fn default_codegen_state(client: ClientModule) {
   CodeGenState(
     imports: dict.new(),
     needs_uuid_decoder: False,
     enums: dict.new(),
   )
   |> import_module("gleam/dynamic/decode")
-  |> import_module("pog")
+  |> import_module(client_import(client))
+}
+
+/// The generated code always calls the client module `pog`, for example
+/// `pog.query` and `pog.Connection`. So this import is the only place that
+/// names the client module: a module that is not already called `pog` is
+/// imported with a `pog` alias, like `import dream_pog as pog`.
+///
+fn client_import(client: ClientModule) -> String {
+  let name = project.client_module_name(client)
+  case name == "pog" || string.ends_with(name, "/pog") {
+    True -> name
+    False -> name <> " as pog"
+  }
 }
 
 fn gleam_type_to_decoder(
@@ -383,6 +397,8 @@ fn gleam_type_to_field_type(
 ///
 pub fn generate_code(
   version version: String,
+  // The module the generated code uses to run the queries.
+  client client: ClientModule,
   // The directory all the queries come from.
   for queries: List(TypedQuery),
   from directory: String,
@@ -395,7 +411,7 @@ pub fn generate_code(
     list.sort(queries, fn(one, other) { string.compare(one.file, other.file) })
 
   let #(state, queries_docs) = {
-    let state = default_codegen_state()
+    let state = default_codegen_state(client)
     use #(state, docs), query <- list.fold(over: queries, from: #(state, []))
     let #(state, doc) = query_doc(state, version, query)
     #(state, [doc, ..docs])

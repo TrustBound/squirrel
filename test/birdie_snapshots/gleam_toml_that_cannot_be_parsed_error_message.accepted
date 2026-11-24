@@ -1,0 +1,10 @@
+---
+version: 1.4.0
+title: gleam toml that cannot be parsed error message
+file: ./test/squirrel_test.gleam
+test_name: gleam_toml_that_cannot_be_parsed_error_message_test
+---
+[31m[1mError: [22mCannot parse gleam.toml[39m
+
+I couldn't parse [4mgleam.toml[24m, so I cannot read the `client_module`
+setting in its `[tools.squirrel]` table.

@@ -2,8 +2,15 @@
 ////
 
 import filepath
+import gleam/list
 import gleam/result
+import gleam/string
 import simplifile
+import squirrel/internal/error.{
+  type Error, CannotParseGleamToml, CannotReadFile, InvalidClientModule,
+  InvalidClientModuleType,
+}
+import squirrel/internal/gleam
 import tom
 
 /// Returns the project's name, read from the `gleam.toml` file.
@@ -15,6 +22,78 @@ pub fn name() -> Result(String, Nil) {
   use toml <- try_nil(tom.parse(configuration))
   use name <- try_nil(tom.get_string(toml, ["name"]))
   Ok(name)
+}
+
+/// The Gleam module that the generated code uses to run queries. It is `pog`
+/// by default, and a project can change it with the `client_module` setting in
+/// the `[tools.squirrel]` table of its `gleam.toml`:
+///
+/// ```toml
+/// [tools.squirrel]
+/// client_module = "dream_pog"
+/// ```
+///
+/// A `ClientModule` can only be built from a valid Gleam module name.
+///
+pub opaque type ClientModule {
+  ClientModule(name: String)
+}
+
+const default_client_module = "pog"
+
+/// Returns the name of the client module, for example `"dream_pog"`.
+///
+pub fn client_module_name(client: ClientModule) -> String {
+  client.name
+}
+
+/// Reads the client module from the project's `gleam.toml` file.
+///
+pub fn client_module() -> Result(ClientModule, Error) {
+  let configuration_path = filepath.join(root(), "gleam.toml")
+
+  use configuration <- result.try(
+    simplifile.read(configuration_path)
+    |> result.map_error(CannotReadFile(configuration_path, _)),
+  )
+  client_module_from_toml(configuration_path, configuration)
+}
+
+/// Reads the client module from the content of a `gleam.toml` file. The `file`
+/// is only used in the error messages.
+///
+pub fn client_module_from_toml(
+  file: String,
+  configuration: String,
+) -> Result(ClientModule, Error) {
+  use toml <- result.try(
+    tom.parse(configuration)
+    |> result.replace_error(CannotParseGleamToml(file)),
+  )
+
+  case tom.get_string(toml, ["tools", "squirrel", "client_module"]) {
+    Error(tom.NotFound(_)) -> Ok(ClientModule(default_client_module))
+    Error(tom.WrongType(key:, expected:, got:)) ->
+      Error(InvalidClientModuleType(
+        file:,
+        key: string.join(key, with: "."),
+        expected:,
+        got:,
+      ))
+    Ok(name) ->
+      case is_module_name(name) {
+        True -> Ok(ClientModule(name))
+        False -> Error(InvalidClientModule(file:, value: name))
+      }
+  }
+}
+
+/// A module name is one or more lowercase names separated by slashes, for
+/// example `dream_pog` or `my_app/database`.
+///
+fn is_module_name(name: String) -> Bool {
+  use segment <- list.all(string.split(name, on: "/"))
+  result.is_ok(gleam.value_identifier(segment))
 }
 
 fn try_nil(

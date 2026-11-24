@@ -28,8 +28,8 @@ const squirrel_version = "v4.7.0"
 
 /// 🐿️ Performs code generation for your Gleam project.
 ///
-/// `squirrel` is not configurable and will discover the queries to generate
-/// code for by relying on a conventional project's structure:
+/// `squirrel` will discover the queries to generate code for by relying on a
+/// conventional project's structure:
 /// - `squirrel` first looks for all directories called `sql` under the `src`
 ///   directory of your Gleam project, and reads all the `*.sql` files in there
 ///   (in glob terms `src/**/sql/*.sql`).
@@ -61,6 +61,13 @@ const squirrel_version = "v4.7.0"
 /// > ⚠️ The generated code relies on the
 /// > [`pog`](https://hexdocs.pm/pog/) package to work, so make sure to add
 /// > that dependency to your project.
+/// > To use another module with the same API, such as `dream_pog`, set it in
+/// > the `[tools.squirrel]` table of your `gleam.toml`:
+/// >
+/// > ```toml
+/// > [tools.squirrel]
+/// > client_module = "dream_pog"
+/// > ```
 ///
 pub fn main() {
   case parse_cli_args() {
@@ -73,7 +80,7 @@ pub fn main() {
     }
 
     Ok(mode) ->
-      case result.try(connection_options(), postgres.connect_and_authenticate) {
+      case client_and_connection() {
         Error(error) -> {
           error.to_doc(error)
           |> doc.to_string(term_width())
@@ -82,7 +89,7 @@ pub fn main() {
           exit(1)
         }
 
-        Ok(connection) -> {
+        Ok(#(client, connection)) -> {
           let generated_queries =
             walk(project.src())
             |> dict.merge(walk(project.test_()))
@@ -95,13 +102,13 @@ pub fn main() {
                 Error(errors) -> report_errors(errors)
                 Ok(generated_queries) ->
                   generated_queries
-                  |> write_queries
+                  |> write_queries(client)
                   |> report_written_queries
               }
 
             CheckGeneratedCode ->
               generated_queries
-              |> check_queries
+              |> check_queries(client)
               |> report_checked_queries
           }
 
@@ -110,6 +117,20 @@ pub fn main() {
         }
       }
   }
+}
+
+/// Reads the client module from the project's `gleam.toml` before it connects
+/// to the database, so an invalid setting is reported before any database
+/// work.
+///
+fn client_and_connection() -> Result(
+  #(project.ClientModule, postgres.Context),
+  Error,
+) {
+  use client <- result.try(project.client_module())
+  use options <- result.try(connection_options())
+  use connection <- result.try(postgres.connect_and_authenticate(options))
+  Ok(#(client, connection))
 }
 
 fn ensure_no_errors(
@@ -363,14 +384,16 @@ fn generate_queries(
 ///
 fn write_queries(
   queries: Dict(String, List(TypedQuery)),
+  client: project.ClientModule,
 ) -> Dict(String, Result(Int, Error)) {
   use directory, queries <- dict.map_values(queries)
   let output_file = directory_to_output_file(directory)
-  write_queries_to_file(queries, from: directory, to: output_file)
+  write_queries_to_file(queries, client:, from: directory, to: output_file)
 }
 
 fn write_queries_to_file(
   queries: List(TypedQuery),
+  client client: project.ClientModule,
   from queries_directory: String,
   to file: String,
 ) -> Result(Int, Error) {
@@ -379,7 +402,12 @@ fn write_queries_to_file(
   let _ = simplifile.create_directory_all(directory)
 
   let code =
-    query.generate_code(squirrel_version, for: queries, from: queries_directory)
+    query.generate_code(
+      squirrel_version,
+      client:,
+      for: queries,
+      from: queries_directory,
+    )
 
   safely_overwrite(to: file, content: code)
   |> result.replace(list.length(queries))
@@ -454,6 +482,7 @@ fn directory_to_output_file(directory: String) -> String {
 
 fn check_queries(
   queries: Dict(String, #(List(query.TypedQuery), List(Error))),
+  client: project.ClientModule,
 ) -> Dict(String, Result(Nil, List(Error))) {
   use directory, #(queries, errors) <- dict.map_values(queries)
   case errors {
@@ -467,7 +496,7 @@ fn check_queries(
       case simplifile.read(output_file) {
         Error(reason) -> Error([CannotReadFile(file: output_file, reason:)])
         Ok(actual_code) ->
-          case check_queries_code(queries, actual_code) {
+          case check_queries_code(queries, client, actual_code) {
             Different -> Error([OutdatedFile(file: output_file)])
             Same -> Ok(Nil)
           }
@@ -492,13 +521,19 @@ pub type CheckResult {
 ///
 fn check_queries_code(
   queries: List(TypedQuery),
+  client: project.ClientModule,
   actual_code: String,
 ) -> CheckResult {
   // The code is compared ignoring any comments, so we have no need to know
   // what actual directory the queries come from: that information is only used
   // to generate better comments!
   let expected_code =
-    query.generate_code(squirrel_version, for: queries, from: "check-queries")
+    query.generate_code(
+      squirrel_version,
+      client:,
+      for: queries,
+      from: "check-queries",
+    )
   compare_code_snippets(actual_code, expected_code)
 }
 

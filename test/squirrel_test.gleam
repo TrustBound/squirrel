@@ -11,6 +11,7 @@ import simplifile
 import squirrel
 import squirrel/internal/database/postgres
 import squirrel/internal/error.{type Error}
+import squirrel/internal/project
 import squirrel/internal/query.{type TypedQuery}
 import temporary
 
@@ -249,10 +250,34 @@ fn should_codegen_queries_options(
   queries: List(#(String, String)),
   options: CodegenOptions,
 ) {
+  should_codegen_queries_options_and_client(queries, options, pog_client())
+}
+
+fn should_codegen_with_comments_and_client(
+  query: String,
+  client: project.ClientModule,
+) -> String {
+  should_codegen_queries_options_and_client(
+    [#("query", query)],
+    CodegenOptions(strip_comments: False),
+    client,
+  )
+}
+
+fn should_codegen_queries_options_and_client(
+  queries: List(#(String, String)),
+  options: CodegenOptions,
+  client: project.ClientModule,
+) {
   // We assert everything went smoothly and we have no errors in the query.
   let assert Ok(#(queries, [])) = type_queries(queries)
   let code =
-    query.generate_code("v-test", for: queries, from: "./test-directory")
+    query.generate_code(
+      "v-test",
+      client:,
+      for: queries,
+      from: "./test-directory",
+    )
 
   let CodegenOptions(strip_comments:) = options
   case strip_comments {
@@ -1309,4 +1334,166 @@ pub fn enum_with_a_long_enoug_name_does_not_generate_invalid_decoder_test() {
   |> birdie.snap(
     title: "enum with a long enoug name does not generate invalid decoder",
   )
+}
+
+// --- CLIENT MODULE -----------------------------------------------------------
+// Tests for the `client_module` setting in the `[tools.squirrel]` table
+// of a project's `gleam.toml`.
+//
+
+/// The client module a project gets when its `gleam.toml` has no
+/// `[tools.squirrel]` table.
+///
+fn pog_client() -> project.ClientModule {
+  let assert Ok(client) =
+    project.client_module_from_toml("gleam.toml", "name = \"wibble\"")
+  client
+}
+
+fn client_toml(value: String) -> String {
+  "name = \"wibble\"
+
+[tools.squirrel]
+client_module = " <> value <> "
+"
+}
+
+fn client(name: String) -> project.ClientModule {
+  let toml = client_toml("\"" <> name <> "\"")
+  let assert Ok(client) = project.client_module_from_toml("gleam.toml", toml)
+  client
+}
+
+fn client_module_error(toml: String) -> String {
+  let assert Error(error) = project.client_module_from_toml("gleam.toml", toml)
+  error.to_doc(error) |> doc.to_string(80)
+}
+
+pub fn client_module_is_pog_without_a_tools_table_test() {
+  assert project.client_module_name(pog_client()) == "pog"
+}
+
+pub fn client_module_is_pog_if_the_tools_table_has_no_setting_test() {
+  let toml = "name = \"wibble\"\n\n[tools.squirrel]\n"
+  let assert Ok(client) = project.client_module_from_toml("gleam.toml", toml)
+  assert project.client_module_name(client) == "pog"
+}
+
+pub fn client_module_is_read_from_the_tools_table_test() {
+  assert project.client_module_name(client("dream_pog")) == "dream_pog"
+}
+
+pub fn client_module_can_be_a_nested_module_test() {
+  assert project.client_module_name(client("my_app/db_client"))
+    == "my_app/db_client"
+}
+
+pub fn client_module_that_is_not_a_module_name_is_an_error_test() {
+  use value <- list.each([
+    "", "Dream_pog", "dream-pog", "dream pog", "1pog", "dream_pog/",
+    "/dream_pog", "my_app//pog", "my_app/Pog",
+  ])
+  let toml = client_toml("\"" <> value <> "\"")
+  let assert Error(error.InvalidClientModule(file: "gleam.toml", value: found)) =
+    project.client_module_from_toml("gleam.toml", toml)
+  assert found == value
+}
+
+pub fn invalid_client_module_error_message_test() {
+  client_toml("\"Dream-Pog\"")
+  |> client_module_error
+  |> birdie.snap(title: "invalid client module error message")
+}
+
+pub fn client_module_that_is_not_a_string_error_message_test() {
+  client_toml("1")
+  |> client_module_error
+  |> birdie.snap(title: "client module that is not a string error message")
+}
+
+pub fn tools_table_that_is_not_a_table_error_message_test() {
+  "name = \"wibble\"\ntools = 1\n"
+  |> client_module_error
+  |> birdie.snap(title: "tools table that is not a table error message")
+}
+
+pub fn gleam_toml_that_cannot_be_parsed_error_message_test() {
+  "name = "
+  |> client_module_error
+  |> birdie.snap(title: "gleam toml that cannot be parsed error message")
+}
+
+pub fn generated_code_with_the_default_client_module_test() {
+  "select name, acorns from squirrel where name = $1"
+  |> should_codegen_with_comments_and_client(pog_client())
+  |> birdie.snap(title: "generated code with the default client module")
+}
+
+pub fn generated_code_with_the_dream_pog_client_module_test() {
+  "select name, acorns from squirrel where name = $1"
+  |> should_codegen_with_comments_and_client(client("dream_pog"))
+  |> birdie.snap(title: "generated code with the dream_pog client module")
+}
+
+pub fn client_module_only_changes_the_client_import_test() {
+  let query =
+    "select name, acorns, $2::uuid as id, $3::date as day
+    from squirrel where name = $1"
+  let without_imports = fn(code) {
+    string.split(code, on: "\n")
+    |> list.filter(keeping: fn(line) { !string.starts_with(line, "import ") })
+  }
+
+  let default_code =
+    should_codegen_with_comments_and_client(query, pog_client())
+  let dream_pog_code =
+    should_codegen_with_comments_and_client(query, client("dream_pog"))
+
+  assert string.contains(default_code, "\nimport pog\n")
+  assert !string.contains(dream_pog_code, "\nimport pog\n")
+  assert string.contains(dream_pog_code, "\nimport dream_pog as pog\n")
+  assert without_imports(dream_pog_code) == without_imports(default_code)
+}
+
+pub fn client_module_named_pog_is_not_aliased_test() {
+  let code =
+    "select 1 as res"
+    |> should_codegen_with_comments_and_client(client("my_app/pog"))
+
+  assert string.contains(code, "\nimport my_app/pog\n")
+  assert !string.contains(code, " as pog")
+}
+
+pub fn check_finds_code_generated_with_another_client_module_test() {
+  let query = "select 1 as res"
+  let expected_code =
+    should_codegen_with_comments_and_client(query, pog_client())
+  let actual_code =
+    should_codegen_with_comments_and_client(query, client("dream_pog"))
+  let assert squirrel.Different =
+    squirrel.compare_code_snippets(expected_code, actual_code)
+}
+
+pub fn named_parameters_with_the_dream_pog_client_module_test() {
+  "
+with squirrel_user as (select 1 as squirrel_user_id, 'Louis' as name)
+select name
+from squirrel_user
+where $1 = squirrel_user_id
+and squirrel_user.name = $2
+"
+  |> should_codegen_with_comments_and_client(client("dream_pog"))
+  |> birdie.snap(title: "named parameters with the dream_pog client module")
+}
+
+pub fn renamed_parameters_with_the_dream_pog_client_module_test() {
+  "
+with wibble as (select gen_random_uuid() as uuid_decoder, 1 as db)
+select uuid_decoder
+from wibble
+where $1 = uuid_decoder
+and db = $2
+"
+  |> should_codegen_with_comments_and_client(client("dream_pog"))
+  |> birdie.snap(title: "renamed parameters with the dream_pog client module")
 }

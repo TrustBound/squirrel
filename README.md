@@ -183,6 +183,20 @@ and use the following defaults if one is not set:
 - `PGPASSWORD`: `""`
 - `PGCONNECT_TIMEOUT`: `5` seconds
 
+### Using another client module
+
+By default the generated code uses `pog`. To use another module with the same
+API, such as `dream_pog`, set it in your project's `gleam.toml`:
+
+```toml
+[tools.squirrel]
+client_module = "dream_pog"
+```
+
+The generated code then starts with `import dream_pog as pog`. All other lines
+stay the same. The value must be a Gleam module name, for example `dream_pog`
+or `my_app/database`.
+
 ## Supported types
 
 Squirrel takes care of the mapping between Postgres types and Gleam types.

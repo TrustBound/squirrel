@@ -1,5 +1,20 @@
 # CHANGELOG
 
+## Unreleased
+
+- The module that the generated code uses to run queries can now be set with
+  the `client_module` key in the `[tools.squirrel]` table of the project's
+  `gleam.toml`. For example:
+
+  ```toml
+  [tools.squirrel]
+  client_module = "dream_pog"
+  ```
+
+  The generated code then imports `dream_pog as pog`, and all other lines stay
+  the same. The default is `pog`. An invalid value is an error before any
+  database work.
+
 ## 4.7.0 - 2026-06-03
 
 - Squirrel can now pick some better argument names based on the structure of the
