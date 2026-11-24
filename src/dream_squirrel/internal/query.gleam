@@ -1,3 +1,9 @@
+import dream_squirrel/internal/error.{
+  type Error, CannotReadFile, QueryFileHasInvalidName,
+  QueryReturnsMultipleValuesWithTheSameName,
+}
+import dream_squirrel/internal/gleam.{type EnumVariant, type TypeIdentifier}
+import dream_squirrel/internal/project.{type ClientModule}
 import filepath
 import glam/doc.{type Document}
 import gleam/bool
@@ -12,12 +18,6 @@ import justin
 import non_empty_list.{type NonEmptyList}
 import simplifile
 import splitter.{type Splitter}
-import squirrel/internal/error.{
-  type Error, CannotReadFile, QueryFileHasInvalidName,
-  QueryReturnsMultipleValuesWithTheSameName,
-}
-import squirrel/internal/gleam.{type EnumVariant, type TypeIdentifier}
-import squirrel/internal/project.{type ClientModule}
 import tote/bag
 
 /// A query that still needs to go through the type checking process.
@@ -405,7 +405,7 @@ pub fn generate_code(
 ) -> String {
   // We need to sort the queries before generating any code, otherwise the order
   // with which they will appear in the generated file won't be reproducible!
-  // That could cause CI checks like `gleam run -m squirrel check` to fail.
+  // That could cause CI checks like `gleam run -m dream_squirrel check` to fail.
   //
   let queries =
     list.sort(queries, fn(one, other) { string.compare(one.file, other.file) })

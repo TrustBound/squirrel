@@ -2,18 +2,21 @@
 
 ## Unreleased
 
+- `dream_squirrel` is a fork of Squirrel 4.7.0. The package and its modules are
+  now called `dream_squirrel`: run `gleam run -m dream_squirrel`.
+
 - The module that the generated code uses to run queries can now be set with
-  the `client_module` key in the `[tools.squirrel]` table of the project's
-  `gleam.toml`. For example:
+  the `client_module` key in the `[tools.dream_squirrel]` table of the
+  project's `gleam.toml`. For example:
 
   ```toml
-  [tools.squirrel]
+  [tools.dream_squirrel]
   client_module = "dream_pog"
   ```
 
   The generated code then imports `dream_pog as pog`, and all other lines stay
-  the same. The default is `pog`. An invalid value is an error before any
-  database work.
+  the same. The default is `pog`, as in Squirrel. An invalid value is an error
+  before any database work.
 
 - `pog` is no longer a dependency of the package, only a dev dependency for the
   tests. A project adds the client package it uses (`pog` or `dream_pog`).

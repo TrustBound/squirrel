@@ -1,8 +1,11 @@
-name = "squirrel"
+name = "dream_squirrel"
 version = "4.7.0"
-description = "🐿️ Type safe SQL in Gleam"
+description = "🐿️ Type safe SQL in Gleam. A fork of Squirrel by Giacomo Cavalieri with a configurable client module."
 licences = ["Apache-2.0"]
-repository = { type = "github", user = "giacomocavalieri", repo = "squirrel" }
+repository = { type = "github", user = "TrustBound", repo = "dream_squirrel" }
+links = [
+  { title = "Upstream Squirrel", href = "https://github.com/giacomocavalieri/squirrel" },
+]
 gleam = ">= 1.11.0"
 
 [dependencies]

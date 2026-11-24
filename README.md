@@ -1,5 +1,34 @@
 # 🐿️ squirrel - type safe SQL in Gleam
 
+## About this fork
+
+`dream_squirrel` is a fork of
+[Squirrel](https://github.com/giacomocavalieri/squirrel) by Giacomo Cavalieri,
+published as `dream_squirrel`. It starts from Squirrel 4.7.0.
+
+Two things are different from Squirrel:
+
+- The names. The package and its modules are called `dream_squirrel`, so you
+  run `gleam run -m dream_squirrel`.
+- The client module. By default the generated code uses `pog`, as in Squirrel.
+  To use another module with the same API, such as `dream_pog`, set it in your
+  project's `gleam.toml`:
+
+  ```toml
+  [tools.dream_squirrel]
+  client_module = "dream_pog"
+  ```
+
+  The generated code then starts with `import dream_pog as pog`. All other
+  lines stay the same. The value must be a Gleam module name, for example
+  `dream_pog` or `my_app/database`.
+
+`dream_squirrel` does not depend on `pog`. Add the client package you use
+(`pog` or `dream_pog`) to your project's dependencies.
+
+The rest of this README is the Squirrel README, with the commands changed to
+the `dream_squirrel` names.
+
 [![Package Version](https://img.shields.io/hexpm/v/squirrel)](https://hex.pm/packages/squirrel)
 [![Hex Docs](https://img.shields.io/badge/hex-docs-ffaff3)](https://hexdocs.pm/squirrel/)
 
@@ -79,7 +108,7 @@ where
   name = $1
 ```
 
-And run `gleam run -m squirrel`. Just like magic you'll now have a type-safe
+And run `gleam run -m dream_squirrel`. Just like magic you'll now have a type-safe
 function `find_squirrel` you can use just as you'd expect:
 
 ```gleam
@@ -113,13 +142,13 @@ So now you get the best of both worlds:
 First you'll need to add Squirrel to your project as a dev dependency:
 
 ```sh
-gleam add squirrel --dev
+gleam add dream_squirrel --dev
 ```
 
-Then you can ask it to generate code running the `squirrel` module:
+Then you can ask it to generate code running the `dream_squirrel` module:
 
 ```sh
-gleam run -m squirrel
+gleam run -m dream_squirrel
 ```
 
 And that's it! As long as you follow a couple of conventions Squirrel will just
@@ -147,7 +176,7 @@ work:
 >     └── my_app_test.gleam
 > ```
 >
-> Running `gleam run -m squirrel` will create a `src/my_app/sql.gleam` file
+> Running `gleam run -m dream_squirrel` will create a `src/my_app/sql.gleam` file
 > defining two functions `find_squirrel` and `list_squirrels` you can then
 > import and use in your code.
 
@@ -155,11 +184,11 @@ work:
 
 Squirrel offers the following commands to streamline your workflow:
 
-- `gleam run -m squirrel`: Generates type-safe Gleam code for all SQL queries
+- `gleam run -m dream_squirrel`: Generates type-safe Gleam code for all SQL queries
   found in `src/**/sql/*.sql`.
-- `gleam run -m squirrel check`: Validates that the generated Gleam code is
+- `gleam run -m dream_squirrel check`: Validates that the generated Gleam code is
   up-to-date with the SQL queries. This is particularly useful to run in a CI
-  pipeline to make sure you don't forget to run `gleam run -m squirrel`.
+  pipeline to make sure you don't forget to run `gleam run -m dream_squirrel`.
 
 ### Talking to the database
 
@@ -182,20 +211,6 @@ and use the following defaults if one is not set:
 - `PGDATABASE`: the name of your Gleam project
 - `PGPASSWORD`: `""`
 - `PGCONNECT_TIMEOUT`: `5` seconds
-
-### Using another client module
-
-By default the generated code uses `pog`. To use another module with the same
-API, such as `dream_pog`, set it in your project's `gleam.toml`:
-
-```toml
-[tools.squirrel]
-client_module = "dream_pog"
-```
-
-The generated code then starts with `import dream_pog as pog`. All other lines
-stay the same. The value must be a Gleam module name, for example `dream_pog`
-or `my_app/database`.
 
 ## Supported types
 

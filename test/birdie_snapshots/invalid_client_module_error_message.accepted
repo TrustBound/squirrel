@@ -1,12 +1,12 @@
 ---
 version: 1.4.0
 title: invalid client module error message
-file: ./test/squirrel_test.gleam
+file: ./test/dream_squirrel_test.gleam
 test_name: invalid_client_module_error_message_test
 ---
 [31m[1mError: [22mInvalid client module[39m
 
-The `client_module` setting in the `[tools.squirrel]` table of
+The `client_module` setting in the `[tools.dream_squirrel]` table of
 [4mgleam.toml[24m is `"Dream-Pog"`, which is not a valid Gleam module name.
 
 Hint: A module name is made of lowercase names separated by slashes, like

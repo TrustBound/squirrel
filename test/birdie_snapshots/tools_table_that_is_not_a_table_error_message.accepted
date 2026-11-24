@@ -1,7 +1,7 @@
 ---
-version: 2.0.0
+version: 1.4.0
 title: tools table that is not a table error message
-file: ./test/squirrel_test.gleam
+file: ./test/dream_squirrel_test.gleam
 test_name: tools_table_that_is_not_a_table_error_message_test
 ---
 [31m[1mError: [22mInvalid client module[39m
@@ -9,5 +9,5 @@ test_name: tools_table_that_is_not_a_table_error_message_test
 The `tools` value in [4mgleam.toml[24m should be of type Table, but it is of
 type Int.
 
-Hint: Set the client module as a string in the `[tools.squirrel]` table, for
-example `client_module = "dream_pog"`.
+Hint: Set the client module as a string in the `[tools.dream_squirrel]` table,
+for example `client_module = "dream_pog"`.

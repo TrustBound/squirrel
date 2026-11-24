@@ -1,8 +1,6 @@
 ---
 version: 2.0.0
 title: generated code with the dream_pog client module
-file: ./test/squirrel_test.gleam
-test_name: generated_code_with_the_dream_pog_client_module_test
 ---
 //// This module contains the code to run the sql queries defined in
 //// `./test-directory`.

@@ -1,4 +1,9 @@
 import birdie
+import dream_squirrel as squirrel
+import dream_squirrel/internal/database/postgres
+import dream_squirrel/internal/error.{type Error}
+import dream_squirrel/internal/project
+import dream_squirrel/internal/query.{type TypedQuery}
 import filepath
 import glam/doc
 import gleam/erlang/process
@@ -8,11 +13,6 @@ import gleeunit
 import global_value
 import pog
 import simplifile
-import squirrel
-import squirrel/internal/database/postgres
-import squirrel/internal/error.{type Error}
-import squirrel/internal/project
-import squirrel/internal/query.{type TypedQuery}
 import temporary
 
 pub fn main() {
@@ -1337,12 +1337,12 @@ pub fn enum_with_a_long_enoug_name_does_not_generate_invalid_decoder_test() {
 }
 
 // --- CLIENT MODULE -----------------------------------------------------------
-// Tests for the `client_module` setting in the `[tools.squirrel]` table
+// Tests for the `client_module` setting in the `[tools.dream_squirrel]` table
 // of a project's `gleam.toml`.
 //
 
 /// The client module a project gets when its `gleam.toml` has no
-/// `[tools.squirrel]` table.
+/// `[tools.dream_squirrel]` table.
 ///
 fn pog_client() -> project.ClientModule {
   let assert Ok(client) =
@@ -1353,7 +1353,7 @@ fn pog_client() -> project.ClientModule {
 fn client_toml(value: String) -> String {
   "name = \"wibble\"
 
-[tools.squirrel]
+[tools.dream_squirrel]
 client_module = " <> value <> "
 "
 }
@@ -1374,7 +1374,7 @@ pub fn client_module_is_pog_without_a_tools_table_test() {
 }
 
 pub fn client_module_is_pog_if_the_tools_table_has_no_setting_test() {
-  let toml = "name = \"wibble\"\n\n[tools.squirrel]\n"
+  let toml = "name = \"wibble\"\n\n[tools.dream_squirrel]\n"
   let assert Ok(client) = project.client_module_from_toml("gleam.toml", toml)
   assert project.client_module_name(client) == "pog"
 }

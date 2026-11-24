@@ -169,7 +169,7 @@ pub fn parse_server_final(msg: BitArray) -> Result(ServerLast, Nil) {
 /// A positive integer number guaranteed to be unique, generated with
 /// `erlang:unique_integer`.
 ///
-@external(erlang, "squirrel_ffi", "unique")
+@external(erlang, "dream_squirrel_ffi", "unique")
 fn unique() -> Int
 
 @external(erlang, "binary", "encode_unsigned")

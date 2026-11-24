@@ -1,16 +1,16 @@
 //// A set of utilities to work within a Gleam project.
 ////
 
+import dream_squirrel/internal/error.{
+  type Error, CannotParseGleamToml, CannotReadFile, InvalidClientModule,
+  InvalidClientModuleType,
+}
+import dream_squirrel/internal/gleam
 import filepath
 import gleam/list
 import gleam/result
 import gleam/string
 import simplifile
-import squirrel/internal/error.{
-  type Error, CannotParseGleamToml, CannotReadFile, InvalidClientModule,
-  InvalidClientModuleType,
-}
-import squirrel/internal/gleam
 import tom
 
 /// Returns the project's name, read from the `gleam.toml` file.
@@ -26,10 +26,10 @@ pub fn name() -> Result(String, Nil) {
 
 /// The Gleam module that the generated code uses to run queries. It is `pog`
 /// by default, and a project can change it with the `client_module` setting in
-/// the `[tools.squirrel]` table of its `gleam.toml`:
+/// the `[tools.dream_squirrel]` table of its `gleam.toml`:
 ///
 /// ```toml
-/// [tools.squirrel]
+/// [tools.dream_squirrel]
 /// client_module = "dream_pog"
 /// ```
 ///
@@ -71,7 +71,7 @@ pub fn client_module_from_toml(
     |> result.replace_error(CannotParseGleamToml(file)),
   )
 
-  case tom.get_string(toml, ["tools", "squirrel", "client_module"]) {
+  case tom.get_string(toml, ["tools", "dream_squirrel", "client_module"]) {
     Error(tom.NotFound(_)) -> Ok(ClientModule(default_client_module))
     Error(tom.WrongType(key:, expected:, got:)) ->
       Error(InvalidClientModuleType(

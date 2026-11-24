@@ -1,14 +1,14 @@
-import gleam/list
-import gleam/result
-import gleam/string
-import justin
-import non_empty_list.{type NonEmptyList}
-import squirrel/internal/error.{
+import dream_squirrel/internal/error.{
   type EnumError, type TypeIdentifierError, type ValueIdentifierError,
   EnumWithNoVariants, InvalidEnumName, InvalidEnumVariants,
   TypeContainsInvalidGrapheme, TypeIsEmpty, ValueContainsInvalidGrapheme,
   ValueIsEmpty,
 }
+import gleam/list
+import gleam/result
+import gleam/string
+import justin
+import non_empty_list.{type NonEmptyList}
 
 /// A Gleam type.
 /// This could also be a custom named type coming from other packages (like

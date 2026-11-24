@@ -1,4 +1,11 @@
 import argv
+import dream_squirrel/internal/database/postgres
+import dream_squirrel/internal/error.{
+  type Error, CannotOverwriteExistingFile, CannotReadFile, CannotWriteToFile,
+  InvalidConnectionString, OutdatedFile,
+}
+import dream_squirrel/internal/project
+import dream_squirrel/internal/query.{type TypedQuery}
 import envoy
 import filepath
 import glam/doc.{type Document}
@@ -15,13 +22,6 @@ import gleam_community/ansi
 import glexer
 import glexer/token
 import simplifile
-import squirrel/internal/database/postgres
-import squirrel/internal/error.{
-  type Error, CannotOverwriteExistingFile, CannotReadFile, CannotWriteToFile,
-  InvalidConnectionString, OutdatedFile,
-}
-import squirrel/internal/project
-import squirrel/internal/query.{type TypedQuery}
 import term_size
 
 const squirrel_version = "v4.7.0"
@@ -62,10 +62,10 @@ const squirrel_version = "v4.7.0"
 /// > [`pog`](https://hexdocs.pm/pog/) package to work, so make sure to add
 /// > that dependency to your project.
 /// > To use another module with the same API, such as `dream_pog`, set it in
-/// > the `[tools.squirrel]` table of your `gleam.toml`:
+/// > the `[tools.dream_squirrel]` table of your `gleam.toml`:
 /// >
 /// > ```toml
-/// > [tools.squirrel]
+/// > [tools.dream_squirrel]
 /// > client_module = "dream_pog"
 /// > ```
 ///
@@ -170,7 +170,7 @@ fn help_text() -> Document {
   let usage_line =
     doc.concat([
       doc.zero_width_string(ansi.yellow("Usage: ")),
-      doc.zero_width_string(ansi.green("gleam run -m squirrel")),
+      doc.zero_width_string(ansi.green("gleam run -m dream_squirrel")),
       doc.from_string(" [COMMAND]"),
     ])
 
@@ -720,5 +720,5 @@ fn flexible_string(string: String) -> Document {
 
 // --- FFI ---------------------------------------------------------------------
 
-@external(erlang, "squirrel_ffi", "exit")
+@external(erlang, "dream_squirrel_ffi", "exit")
 fn exit(n: Int) -> Nil
