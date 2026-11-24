@@ -1,5 +1,5 @@
 ---
-version: 2.0.0
+version: 2.0.2
 title: renamed parameters with the dream_pog client module
 ---
 //// This module contains the code to run the sql queries defined in
@@ -29,9 +29,9 @@ pub type QueryRow {
 /// > the [squirrel package](https://github.com/giacomocavalieri/squirrel).
 ///
 pub fn query(
-  db: pog.Connection,
+  connection: pog.Connection,
   uuid_decoder_1: Uuid,
-  db_1: Int,
+  connection_1: Int,
 ) -> Result(pog.Returned(QueryRow), pog.QueryError) {
   let decoder = {
     use uuid_decoder <- decode.field(0, uuid_decoder())
@@ -39,17 +39,17 @@ pub fn query(
   }
 
   "
-with wibble as (select gen_random_uuid() as uuid_decoder, 1 as db)
+with wibble as (select gen_random_uuid() as uuid_decoder, 1 as connection)
 select uuid_decoder
 from wibble
 where $1 = uuid_decoder
-and db = $2
+and connection = $2
 "
   |> pog.query
   |> pog.parameter(pog.text(uuid.to_string(uuid_decoder_1)))
-  |> pog.parameter(pog.int(db_1))
+  |> pog.parameter(pog.int(connection_1))
   |> pog.returning(decoder)
-  |> pog.execute(db)
+  |> pog.execute(connection)
 }
 
 // --- Encoding/decoding utils -------------------------------------------------

@@ -2,7 +2,8 @@
 
 ## Unreleased
 
-- `dream_squirrel` is a fork of Squirrel 4.7.0. The package and its modules are
+- `dream_squirrel` is a fork of Squirrel 4.7.0 that also includes the upstream
+  `main` branch up to commit `5b6407d`. The package and its modules are
   now called `dream_squirrel`: run `gleam run -m dream_squirrel`.
 
 - The module that the generated code uses to run queries can now be set with
@@ -20,6 +21,10 @@
 
 - `pog` is no longer a dependency of the package, only a dev dependency for the
   tests. A project adds the client package it uses (`pog` or `dream_pog`).
+
+- Squirrel now uses a better name for the generated function connection
+  parameter.
+  ([Giacomo Cavalieri](https://github.com/giacomocavalieri))
 
 ## 4.7.0 - 2026-06-03
 

@@ -1,5 +1,5 @@
 ---
-version: 2.0.0
+version: 2.0.2
 title: named parameters with the dream_pog client module
 ---
 //// This module contains the code to run the sql queries defined in
@@ -28,7 +28,7 @@ pub type QueryRow {
 /// > the [squirrel package](https://github.com/giacomocavalieri/squirrel).
 ///
 pub fn query(
-  db: pog.Connection,
+  connection: pog.Connection,
   squirrel_user_id: Int,
   squirrel_user_name: String,
 ) -> Result(pog.Returned(QueryRow), pog.QueryError) {
@@ -48,6 +48,6 @@ and squirrel_user.name = $2
   |> pog.parameter(pog.int(squirrel_user_id))
   |> pog.parameter(pog.text(squirrel_user_name))
   |> pog.returning(decoder)
-  |> pog.execute(db)
+  |> pog.execute(connection)
 }
 

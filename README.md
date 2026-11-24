@@ -4,7 +4,8 @@
 
 `dream_squirrel` is a fork of
 [Squirrel](https://github.com/giacomocavalieri/squirrel) by Giacomo Cavalieri,
-published as `dream_squirrel`. It starts from Squirrel 4.7.0.
+published as `dream_squirrel`. It starts from Squirrel 4.7.0 and also includes
+the upstream `main` branch up to commit `5b6407d`.
 
 Two things are different from Squirrel:
 
@@ -372,7 +373,7 @@ So what can one do to work around this problem?
        end,
      description =
        case $2
-         when "" then null
+         when '' then null
          else $2
        end
    where id = $3;
@@ -393,7 +394,7 @@ So what can one do to work around this problem?
      returns text
      language sql
      immutable
-     return nullif(value, "");
+     return nullif(value, '');
    ```
 
 ## References

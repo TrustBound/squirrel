@@ -1107,16 +1107,16 @@ where $1 = decoder
   |> birdie.snap(title: "renames arguments to avoid shadowing decoder")
 }
 
-pub fn renames_arguments_to_avoid_shadowing_db_test() {
+pub fn renames_arguments_to_avoid_shadowing_connection_test() {
   should_codegen(
     "
-with wibble as (select 1 as db)
-select db
+with wibble as (select 1 as connection)
+select connection
 from wibble
-where $1 = db
+where $1 = connection
 ",
   )
-  |> birdie.snap(title: "renames arguments to avoid shadowing db")
+  |> birdie.snap(title: "renames arguments to avoid shadowing connection")
 }
 
 pub fn renames_arguments_to_avoid_two_arguments_with_the_same_name_test() {
@@ -1488,11 +1488,11 @@ and squirrel_user.name = $2
 
 pub fn renamed_parameters_with_the_dream_pog_client_module_test() {
   "
-with wibble as (select gen_random_uuid() as uuid_decoder, 1 as db)
+with wibble as (select gen_random_uuid() as uuid_decoder, 1 as connection)
 select uuid_decoder
 from wibble
 where $1 = uuid_decoder
-and db = $2
+and connection = $2
 "
   |> should_codegen_with_comments_and_client(client("dream_pog"))
   |> birdie.snap(title: "renamed parameters with the dream_pog client module")
