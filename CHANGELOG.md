@@ -15,6 +15,9 @@
   the same. The default is `pog`. An invalid value is an error before any
   database work.
 
+- `pog` is no longer a dependency of the package, only a dev dependency for the
+  tests. A project adds the client package it uses (`pog` or `dream_pog`).
+
 ## 4.7.0 - 2026-06-03
 
 - Squirrel can now pick some better argument names based on the structure of the

@@ -120,6 +120,7 @@ version = \"1.0.0\"
 
 [dependencies]
 squirrel = { path = \"../..\" }
+pog = \">= 4.1.0 and < 5.0.0\"
 "
 
 fn with_timeout(seconds seconds: Int, run fun: fn() -> a) {
