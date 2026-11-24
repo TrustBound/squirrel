@@ -1,6 +1,6 @@
 # CHANGELOG
 
-## Unreleased
+## 1.0.0 - 2026-11-24
 
 - `dream_sql_generator` is a fork of Squirrel 4.7.0 that also includes the upstream
   `main` branch up to commit `5b6407d`. The package and its modules are
