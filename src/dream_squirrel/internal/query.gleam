@@ -681,7 +681,8 @@ fn module_doc(version: String, directory: String) -> String {
   "//// This module contains the code to run the sql queries defined in
 //// `" <> directory <> "`.
 //// > 🐿️ This module was generated automatically using " <> version <> " of
-//// > the [squirrel package](https://github.com/giacomocavalieri/squirrel).
+//// > the [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+//// > a fork of Squirrel.
 ////"
 }
 
@@ -702,7 +703,8 @@ fn function_doc(version: String, query: TypedQuery) -> String {
   base <> "
 ///
 /// > 🐿️ This function was generated automatically using " <> version <> " of
-/// > the [squirrel package](https://github.com/giacomocavalieri/squirrel).
+/// > the [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+/// > a fork of Squirrel.
 ///"
 }
 
@@ -728,7 +730,8 @@ fn record_doc(
 /// defined in `" <> file <> "`.
 ///
 /// > 🐿️ This type definition was generated automatically using " <> version <> " of the
-/// > [squirrel package](https://github.com/giacomocavalieri/squirrel).
+/// > [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+/// > a fork of Squirrel.
 ///"
 
   let #(state, fields) = {
@@ -825,7 +828,8 @@ fn enum_type_definition_doc(
     "/// Corresponds to the Postgres `" <> original_name <> "` enum.
 ///
 /// > 🐿️ This type definition was generated automatically using " <> version <> " of the
-/// > [squirrel package](https://github.com/giacomocavalieri/squirrel).
+/// > [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+/// > a fork of Squirrel.
 ///"
 
   doc.concat([

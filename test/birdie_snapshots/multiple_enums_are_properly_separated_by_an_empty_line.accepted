@@ -1,13 +1,12 @@
 ---
-version: 2.0.0
+version: 2.0.2
 title: multiple enums are properly separated by an empty line
-file: ./test/squirrel_test.gleam
-test_name: multiple_enums_are_properly_separated_by_an_empty_line_test
 ---
 //// This module contains the code to run the sql queries defined in
 //// `./test-directory`.
 //// > 🐿️ This module was generated automatically using v-test of
-//// > the [squirrel package](https://github.com/giacomocavalieri/squirrel).
+//// > the [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+//// > a fork of Squirrel.
 ////
 
 import gleam/dynamic/decode
@@ -17,7 +16,8 @@ import pog
 /// defined in `query.sql`.
 ///
 /// > 🐿️ This type definition was generated automatically using v-test of the
-/// > [squirrel package](https://github.com/giacomocavalieri/squirrel).
+/// > [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+/// > a fork of Squirrel.
 ///
 pub type QueryRow {
   QueryRow(squirrel_colour: SquirrelColour)
@@ -27,7 +27,8 @@ pub type QueryRow {
 /// defined in `query.sql`.
 ///
 /// > 🐿️ This function was generated automatically using v-test of
-/// > the [squirrel package](https://github.com/giacomocavalieri/squirrel).
+/// > the [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+/// > a fork of Squirrel.
 ///
 pub fn query(
   connection: pog.Connection,
@@ -53,7 +54,8 @@ where $1 = 'gleamy'::squirrel_mood
 /// Corresponds to the Postgres `squirrel_colour` enum.
 ///
 /// > 🐿️ This type definition was generated automatically using v-test of the
-/// > [squirrel package](https://github.com/giacomocavalieri/squirrel).
+/// > [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+/// > a fork of Squirrel.
 ///
 pub type SquirrelColour {
   LightBrown
@@ -74,7 +76,8 @@ fn squirrel_colour_decoder() -> decode.Decoder(SquirrelColour) {
 /// Corresponds to the Postgres `squirrel_mood` enum.
 ///
 /// > 🐿️ This type definition was generated automatically using v-test of the
-/// > [squirrel package](https://github.com/giacomocavalieri/squirrel).
+/// > [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+/// > a fork of Squirrel.
 ///
 pub type SquirrelMood {
   Desperate

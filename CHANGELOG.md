@@ -22,6 +22,11 @@
 - `pog` is no longer a dependency of the package, only a dev dependency for the
   tests. A project adds the client package it uses (`pog` or `dream_pog`).
 
+- The generated code and the CLI now name `dream_squirrel` v1.0.0. Each
+  generated module, function and type says it was generated using v1.0.0 of
+  the [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+  a fork of Squirrel.
+
 - Squirrel now uses a better name for the generated function connection
   parameter.
   ([Giacomo Cavalieri](https://github.com/giacomocavalieri))

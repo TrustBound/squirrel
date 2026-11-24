@@ -1,13 +1,12 @@
 ---
-version: 2.0.0
+version: 2.0.2
 title: there is only one empty line between code generated for different queries
-file: ./test/squirrel_test.gleam
-test_name: there_is_only_one_empty_line_between_code_generated_for_different_queries_test
 ---
 //// This module contains the code to run the sql queries defined in
 //// `./test-directory`.
 //// > 🐿️ This module was generated automatically using v-test of
-//// > the [squirrel package](https://github.com/giacomocavalieri/squirrel).
+//// > the [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+//// > a fork of Squirrel.
 ////
 
 import gleam/dynamic/decode
@@ -17,7 +16,8 @@ import pog
 /// defined in `one.sql`.
 ///
 /// > 🐿️ This type definition was generated automatically using v-test of the
-/// > [squirrel package](https://github.com/giacomocavalieri/squirrel).
+/// > [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+/// > a fork of Squirrel.
 ///
 pub type OneRow {
   OneRow(res: Int)
@@ -27,7 +27,8 @@ pub type OneRow {
 /// defined in `one.sql`.
 ///
 /// > 🐿️ This function was generated automatically using v-test of
-/// > the [squirrel package](https://github.com/giacomocavalieri/squirrel).
+/// > the [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+/// > a fork of Squirrel.
 ///
 pub fn one(
   connection: pog.Connection,
@@ -47,7 +48,8 @@ pub fn one(
 /// defined in `two.sql`.
 ///
 /// > 🐿️ This type definition was generated automatically using v-test of the
-/// > [squirrel package](https://github.com/giacomocavalieri/squirrel).
+/// > [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+/// > a fork of Squirrel.
 ///
 pub type TwoRow {
   TwoRow(res: Int)
@@ -57,7 +59,8 @@ pub type TwoRow {
 /// defined in `two.sql`.
 ///
 /// > 🐿️ This function was generated automatically using v-test of
-/// > the [squirrel package](https://github.com/giacomocavalieri/squirrel).
+/// > the [dream_squirrel package](https://github.com/TrustBound/squirrel/tree/dream-squirrel),
+/// > a fork of Squirrel.
 ///
 pub fn two(
   connection: pog.Connection,

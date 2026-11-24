@@ -24,7 +24,7 @@ import glexer/token
 import simplifile
 import term_size
 
-const squirrel_version = "v4.7.0"
+const squirrel_version = "v1.0.0"
 
 /// 🐿️ Performs code generation for your Gleam project.
 ///
@@ -165,7 +165,7 @@ fn parse_cli_args() -> Result(Mode, Nil) {
 
 fn help_text() -> Document {
   let nesting = 4
-  let title_line = doc.from_string("🐿️  Squirrel " <> squirrel_version)
+  let title_line = doc.from_string("🐿️  dream_squirrel " <> squirrel_version)
 
   let usage_line =
     doc.concat([
