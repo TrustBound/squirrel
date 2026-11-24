@@ -927,8 +927,7 @@ fn enum_decoder_doc(
   ])
 }
 
-const uuid_decoder =
-  "/// A decoder to decode `Uuid`s coming from a Postgres query.
+const uuid_decoder = "/// A decoder to decode `Uuid`s coming from a Postgres query.
 ///
 fn uuid_decoder() {
   use bit_array <- decode.then(decode.bit_array)
